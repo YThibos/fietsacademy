@@ -10,15 +10,21 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import be.vdab.enums.Geslacht;
+
+//@NamedQuery(name = "Docent.findByWeddeBetween",
+//query = "SELECT d FROM Docent d WHERE d.wedde BETWEEN :van AND :tot"
+//		+ " ORDER BY d.wedde, d.id")
 
 @Entity
 @Table(name = "docenten")
 public class Docent implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

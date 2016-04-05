@@ -5,6 +5,8 @@ import java.util.List;
 
 import be.vdab.entities.Docent;
 import be.vdab.repositories.DocentRepository;
+import be.vdab.valueobjects.AantalDocentenPerWedde;
+import be.vdab.valueobjects.VoornaamEnId;
 
 public class DocentService extends AbstractService {
 
@@ -32,7 +34,19 @@ public class DocentService extends AbstractService {
 		commit();
 	}
 	
-	public List<Docent> findByWeddeBetween(BigDecimal van, BigDecimal tot) {
-		return docentRepository.findByWeddeBetween(van, tot);
+	public List<Docent> findByWeddeBetween(BigDecimal van, BigDecimal tot, int vanafRij, int aantalRijen) {
+		return docentRepository.findByWeddeBetween(van, tot, vanafRij, aantalRijen);
+	}
+	
+	public List<VoornaamEnId> findVoornamen() {
+		return docentRepository.findVoornamen();
+	}
+	
+	public BigDecimal findMaxWedde() {
+		return docentRepository.findMaxWedde();
+	}
+	
+	public List<AantalDocentenPerWedde> findAantalDocentenPerWedde() {
+		return docentRepository.findAantalDocentenPerWedde();
 	}
 }
