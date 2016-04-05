@@ -1,5 +1,8 @@
 package be.vdab.repositories;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import be.vdab.entities.Docent;
 
 public class DocentRepository extends AbstractRepository {
@@ -17,5 +20,9 @@ public class DocentRepository extends AbstractRepository {
 		if (teVerwijderenDocent != null) {
 			getEntityManager().remove(teVerwijderenDocent);
 		}
+	}
+	
+	public List<Docent> findByWeddeBetween(BigDecimal van, BigDecimal tot) {
+		return getEntityManager().createQuery("SELECT d FROM Docent d", Docent.class).getResultList();
 	}
 }

@@ -122,7 +122,35 @@ public class Docent implements Serializable {
 	}
 
 	public void opslag(BigDecimal percentage) {
-		BigDecimal factor =	BigDecimal.ONE.add(percentage.divide(BigDecimal.valueOf(100)));
+		BigDecimal factor = BigDecimal.ONE.add(percentage.divide(BigDecimal.valueOf(100)));
 		wedde = wedde.multiply(factor).setScale(2, RoundingMode.HALF_UP);
-		}
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		result = prime * result + (int) (rijksregisternr ^ (rijksregisternr >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Docent))
+			return false;
+		Docent other = (Docent) obj;
+		if (id != other.id)
+			return false;
+		if (rijksregisternr != other.rijksregisternr)
+			return false;
+		return true;
+	}
+
+	
+	
 }

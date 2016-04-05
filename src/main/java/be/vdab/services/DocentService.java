@@ -1,11 +1,9 @@
 package be.vdab.services;
 
 import java.math.BigDecimal;
-
-import javax.persistence.EntityManager;
+import java.util.List;
 
 import be.vdab.entities.Docent;
-import be.vdab.filters.JPAFilter;
 import be.vdab.repositories.DocentRepository;
 
 public class DocentService extends AbstractService {
@@ -34,4 +32,7 @@ public class DocentService extends AbstractService {
 		commit();
 	}
 	
+	public List<Docent> findByWeddeBetween(BigDecimal van, BigDecimal tot) {
+		return docentRepository.findByWeddeBetween(van, tot);
+	}
 }
