@@ -1,23 +1,21 @@
 package be.vdab.repositories;
 
-import javax.persistence.EntityManager;
-
 import be.vdab.entities.Docent;
 
-public class DocentRepository {
+public class DocentRepository extends AbstractRepository {
 
-	public Docent read(long id, EntityManager entityManager) {
-		return entityManager.find(Docent.class, id);
+	public Docent read(long id) {
+		return getEntityManager().find(Docent.class, id);
 	}
 	
-	public void create(Docent docent, EntityManager entityManager) {
-		entityManager.persist(docent);
+	public void create(Docent docent) {
+		getEntityManager().persist(docent);
 	}
 	
-	public void delete(long id, EntityManager entityManager) {
-		Docent teVerwijderenDocent = entityManager.find(Docent.class, id);
+	public void delete(long id) {
+		Docent teVerwijderenDocent = getEntityManager().find(Docent.class, id);
 		if (teVerwijderenDocent != null) {
-			entityManager.remove(teVerwijderenDocent);
+			getEntityManager().remove(teVerwijderenDocent);
 		}
 	}
 }

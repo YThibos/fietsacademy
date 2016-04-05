@@ -21,6 +21,7 @@ public class JPAFilter implements Filter {
 
 	private static final EntityManagerFactory entityManagerFactory = 
 			Persistence.createEntityManagerFactory("fietsacademy");
+	private static final ThreadLocal<EntityManager> entityManagers = new ThreadLocal<>();
 	
 	/**
 	 * @see Filter#init(FilterConfig)
@@ -33,8 +34,21 @@ public class JPAFilter implements Filter {
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		request.setCharacterEncoding("UTF-8");
-		chain.doFilter(request, response);
+		
+		entityManagers.set(entityManagerFactory.createEntityManager());
+
+		try {
+			request.setCharacterEncoding("UTF-8");
+			chain.doFilter(request, response);
+		} finally {
+			EntityManager entityManager = entityManagers.get();
+			if (entityManager.getTransaction().isActive()) {
+				entityManager.getTransaction().rollback();
+			}
+			entityManager.close();
+			entityManagers.remove();
+		}
+		
 	}
 	
 	/**
@@ -45,7 +59,7 @@ public class JPAFilter implements Filter {
 	}
 	
 	public static EntityManager getEntityManager() {
-		return entityManagerFactory.createEntityManager();
+		return entityManagers.get();
 	}
 
 }
