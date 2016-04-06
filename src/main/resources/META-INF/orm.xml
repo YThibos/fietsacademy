@@ -14,4 +14,11 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
 		</query>
 	</named-query>
 	
+	<named-query name="Docent.algemeneOpslag">
+		<query>
+			UPDATE Docent d
+			SET d.wedde = d.wedde * :factor
+		</query>
+	</named-query>
+	
 </entity-mappings>

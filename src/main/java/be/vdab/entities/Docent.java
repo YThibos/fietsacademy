@@ -3,6 +3,7 @@ package be.vdab.entities;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Comparator;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -156,7 +157,7 @@ public class Docent implements Serializable {
 			return false;
 		return true;
 	}
-
+	
 	
 	
 }
