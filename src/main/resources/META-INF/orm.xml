@@ -21,4 +21,10 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
 		</query>
 	</named-query>
 	
+	<named-query name="Cursus.findByNaamContains">
+		<query>
+			SELECT c FROM Cursus c WHERE c.naam LIKE :zoals ORDER BY c.naam
+		</query>
+	</named-query>
+	
 </entity-mappings>
