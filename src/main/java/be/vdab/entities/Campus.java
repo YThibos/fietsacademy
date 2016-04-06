@@ -2,47 +2,54 @@ package be.vdab.entities;
 
 import java.io.Serializable;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@Table(name="cursussen")
-public class Cursus implements Serializable {
+import be.vdab.valueobjects.Adres;
 
+@Entity
+@Table(name ="campussen")
+public class Campus implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
 	
+	// MEMBER VAR's
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	private String naam;
+	@Embedded
+	private Adres adres;
 	
-	protected Cursus() {}
-	
-	public Cursus(String naam) {
+	// CONSTRUCTORS
+	protected Campus() {}
+
+	public Campus(String naam, Adres adres) {
 		this.naam = naam;
+		this.adres = adres;
 	}
-	public long getId() {
-		return id;
-	}
-	public void setId(long id) {
-		this.id = id;
-	}
+
+	// GETTERS & SETTERS
 	public String getNaam() {
 		return naam;
 	}
+
+	public Adres getAdres() {
+		return adres;
+	}
+
 	public void setNaam(String naam) {
 		this.naam = naam;
 	}
-	
-	@Override
-	public String toString() {
-		return naam;
+
+	public void setAdres(Adres adres) {
+		this.adres = adres;
 	}
+	
+	
 	
 }

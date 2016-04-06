@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<entity-mappings 
-	xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm
 http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
 	version="2.1">
-	
+
 	<named-query name='Docent.findByWeddeBetween'>
 		<query>
 			select d from Docent d
@@ -13,18 +12,30 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
 			order by d.wedde, d.id
 		</query>
 	</named-query>
-	
+
 	<named-query name="Docent.algemeneOpslag">
 		<query>
 			UPDATE Docent d
 			SET d.wedde = d.wedde * :factor
 		</query>
 	</named-query>
-	
+
 	<named-query name="Cursus.findByNaamContains">
 		<query>
 			SELECT c FROM Cursus c WHERE c.naam LIKE :zoals ORDER BY c.naam
 		</query>
 	</named-query>
+
+	<named-query name='Campus.findByGemeente'>
+		<query>
+			SELECT c FROM Campus c WHERE c.adres.gemeente = :gemeente ORDER BY c.naam
+		</query>
+	</named-query>
 	
+	<named-query name='Campus.findAll'> <!-- voor later in de cursus -->
+		<query>
+			SELECT c FROM Campus c ORDER BY c.naam
+		</query>
+	</named-query>
+
 </entity-mappings>
