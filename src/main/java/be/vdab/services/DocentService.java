@@ -1,6 +1,7 @@
 package be.vdab.services;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 import be.vdab.entities.Docent;
@@ -56,6 +57,19 @@ public class DocentService extends AbstractService {
 		
 		beginTransaction();
 		docentRepository.algemeneOpslag(factor);
+		commit();
+	}
+	
+	public void bijnaamToevoegen(long id, String bijnaam) {
+		beginTransaction();
+		docentRepository.read(id).addBijnaam(bijnaam);
+		commit();
+	}
+	
+	public void bijnamenVerwijderen(long id, String[] bijnamen) {
+		beginTransaction();
+		Docent docent = docentRepository.read(id);
+		Arrays.asList(bijnamen).stream().forEach(docent::removeBijnaam);
 		commit();
 	}
 }

@@ -3,13 +3,20 @@ package be.vdab.entities;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 import be.vdab.enums.Geslacht;
@@ -34,7 +41,13 @@ public class Docent implements Serializable {
 	private Geslacht geslacht;
 	private BigDecimal wedde;
 	private long rijksregisternr;
+	
+	@ElementCollection
+	@CollectionTable(name = "docentenbijnamen", joinColumns = @JoinColumn(name = "docentid"))
+	@Column(name="Bijnaam")
+	private Set<String> bijnamen;
 
+	// CONSTRUCTORS
 	protected Docent() {
 	}
 
@@ -44,8 +57,11 @@ public class Docent implements Serializable {
 		setGeslacht(geslacht);
 		setWedde(wedde);
 		setRijksregisternr(rijksregisternr);
+		bijnamen = new HashSet<>();
 	}
 
+	
+	// GETTERS & SETTERS
 	public long getId() {
 		return id;
 	}
@@ -109,7 +125,13 @@ public class Docent implements Serializable {
 	public void setGeslacht(Geslacht geslacht) {
 		this.geslacht = geslacht;
 	}
+	
+	public Set<String> getBijnamen() {
+		return Collections.unmodifiableSet(bijnamen);
+	}
 
+	
+	// VALIDATION METHODS
 	public static boolean isStringValid(String string) {
 		return string != null && !string.isEmpty();
 	}
@@ -131,6 +153,8 @@ public class Docent implements Serializable {
 		wedde = wedde.multiply(factor).setScale(2, RoundingMode.HALF_UP);
 	}
 
+	
+	// OBJECT METHOD OVERRIDES
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -157,5 +181,13 @@ public class Docent implements Serializable {
 	}
 	
 	
+	// DOCENT METHODS
+	public void addBijnaam(String bijnaam) {
+		bijnamen.add(bijnaam);
+	}
+	
+	public void removeBijnaam(String bijnaam) {
+		bijnamen.remove(bijnaam);
+	}
 	
 }

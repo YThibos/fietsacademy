@@ -33,6 +33,32 @@
 		${docent.naam} 
 		, wedde: &euro; <fmt:formatNumber value='${docent.wedde}' />
 
+		<h2>Bijnamen</h2>
+		<c:if test="${not empty docent.bijnamen }">
+			<form method="post">
+				<ul>
+					<c:forEach var="bijnaam" items="${docent.bijnamen }">
+						<li><label>${bijnaam}
+						<input type='checkbox' name='bijnaam' value='${bijnaam}'></label></li>
+					</c:forEach>
+				</ul>
+				<input type='submit' value='Bijnamen verwijderen' name='verwijderen'>
+			</form>
+		</c:if>
+
+		<form method='post' id='toevoegform'>
+			<label>
+				Nieuwe bijnaam: <span>${fouten.bijnaam}</span>
+				<input name='bijnaam' value='${param.bijnaam}' required>
+			</label>
+			<input type='submit' value='Toevoegen' id='toevoegknop'>
+		</form>
+		<script>
+			document.getElementById('toevoegform').onsubmit = function() {
+				document.getElementById('toevoegknop').disabled = true;
+			};
+		</script>
+
 		<h2>Acties</h2>
 
 		<c:url value='/docenten/verwijderen.htm' var='verwijderURL'>
