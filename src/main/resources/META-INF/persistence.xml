@@ -6,17 +6,22 @@ http://www.oracle.com/webfolder/technetwork/jsc/xml/ns/persistence/persistence_2
 	
 	<persistence-unit name='fietsacademy'>
 		
+		<!-- DATASOURCE -->
 		<non-jta-data-source>
 			java:/comp/env/jdbc/fietsacademy
 		</non-jta-data-source>
 	
+		<!-- PERSISTED CLASSES -->
 		<class>be.vdab.entities.Docent</class>	
 		<class>be.vdab.entities.Cursus</class>
 		<class>be.vdab.entities.GroepsCursus</class>
 		<class>be.vdab.entities.IndividueleCursus</class>
 		<class>be.vdab.entities.Campus</class>
+		
 		<class>be.vdab.valueobjects.Adres</class>
-			
+		<class>be.vdab.valueobjects.TelefoonNr</class>
+		
+		<!-- DATABASE COMMUNICATION PROPERTIES -->	
 		<properties>
 			<property name='hibernate.show_sql' value='true' />
 			<property name='hibernate.format_sql' value='true' />
