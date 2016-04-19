@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import be.vdab.entities.Docent;
+import be.vdab.exceptions.DocentAlreadyExistsException;
 import be.vdab.repositories.DocentRepository;
 import be.vdab.valueobjects.AantalDocentenPerWedde;
 import be.vdab.valueobjects.VoornaamEnId;
@@ -17,7 +18,15 @@ public class DocentService extends AbstractService {
 		return docentRepository.read(id);		
 	}
 	
+	/**
+	 * 
+	 * @param docent
+	 * @exception DocentAlreadyExistsException Thrown if rijksregisternr found in db.
+	 */
 	public void create(Docent docent) {
+		if (docentRepository.findByRijksregisternr(docent.getRijksregisternr()) != null) {
+			throw new DocentAlreadyExistsException("Rijksregisternr bestaat al in DB");
+		}
 		beginTransaction();
 		docentRepository.create(docent);
 		commit();
@@ -72,4 +81,5 @@ public class DocentService extends AbstractService {
 		Arrays.asList(bijnamen).stream().forEach(docent::removeBijnaam);
 		commit();
 	}
+	
 }

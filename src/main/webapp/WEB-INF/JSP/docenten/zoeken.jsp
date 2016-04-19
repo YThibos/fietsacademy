@@ -45,6 +45,15 @@
 				<input type='submit' value='Bijnamen verwijderen' name='verwijderen'>
 			</form>
 		</c:if>
+		
+		<c:if test='${not empty docent.verantwoordelijkheden}'>
+			<h2>Verantwoordelijkheden</h2>
+			<ul>
+				<c:forEach items='${docent.verantwoordelijkheden}' var='verantwoordelijkheid'>
+					<li>${verantwoordelijkheid.naam}</li>
+				</c:forEach>
+			</ul>
+		</c:if>
 
 		<form method='post' id='toevoegform'>
 			<label>

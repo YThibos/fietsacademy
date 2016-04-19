@@ -9,10 +9,13 @@ import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
@@ -38,6 +41,14 @@ public class Campus implements Serializable {
 	@OrderBy("fax")
 	private Set<TelefoonNr> telefoonNrs;
 	
+	@OneToMany(mappedBy = "campus")
+	@OrderBy("voornaam, familienaam")
+	private Set<Docent> docenten;
+	
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "managerid")
+	private Manager manager;
+	
 	// CONSTRUCTORS
 	protected Campus() {}
 
@@ -45,6 +56,7 @@ public class Campus implements Serializable {
 		this.naam = naam;
 		this.adres = adres;
 		telefoonNrs = new LinkedHashSet<>();
+		docenten = new LinkedHashSet<>();
 	}
 
 	// GETTERS & SETTERS
@@ -72,13 +84,33 @@ public class Campus implements Serializable {
 		this.adres = adres;
 	}
 	
+	public Set<Docent> getDocenten() {
+		return Collections.unmodifiableSet(docenten);
+	}
+	
+	public Manager getManager() {
+		return manager;
+	}
+
 	// OTHERS
-	public void add(TelefoonNr telefoonNr) {
+	public void addTelefoonNr(TelefoonNr telefoonNr) {
 		telefoonNrs.add(telefoonNr);
 	}
 	
-	public void remove(TelefoonNr telefoonNr) {
+	public void removeTelefoonNr(TelefoonNr telefoonNr) {
 		telefoonNrs.remove(telefoonNr);
 	}
 	
+	public void addDocent(Docent docent) {
+		docenten.add(docent);
+		if (docent.getCampus() != this) {
+			docent.setCampus(this);
+		}
+	}
+	public void removeDocent(Docent docent) {
+		docenten.remove(docent);
+		if (docent.getCampus() == this) {
+			docent.setCampus(null);
+		}
+	}
 }

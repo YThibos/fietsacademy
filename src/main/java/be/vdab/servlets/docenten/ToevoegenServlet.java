@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import be.vdab.entities.Docent;
 import be.vdab.enums.Geslacht;
+import be.vdab.exceptions.DocentAlreadyExistsException;
 import be.vdab.services.CampusService;
 import be.vdab.services.DocentService;
 
@@ -95,16 +96,20 @@ public class ToevoegenServlet extends HttpServlet {
 		
 		// Als alles in orde, maak docent aan via docentService
 		if (fouten.isEmpty()) {
+			
 			Docent docent = new Docent(voornaam, familienaam, Geslacht.valueOf(geslacht), wedde, rijksregisternr);
-			
-			
-			System.out.println("\n\n\n" + " !!!!!!!!!! CAMPUS ID = " + campusId + "\n\n\n");
-			
 			docent.setCampus(campusService.read(Long.parseLong(campusId)));
-			docentService.create(docent);
-			response.sendRedirect(
+			
+			try {
+				docentService.create(docent);
+				response.sendRedirect(
 					response.encodeRedirectURL(String.format(REDIRECT_URL, request.getContextPath(), docent.getId())));
-		} else {
+			}
+			catch (DocentAlreadyExistsException ex) {
+				fouten.put("rijksregisternr", "Rijksregisternr bestaat al in database");
+			}
+		}  
+		if (!fouten.isEmpty()) {
 			request.setAttribute("fouten", fouten);
 			request.setAttribute("campussen", campusService.findAll());
 			request.getRequestDispatcher(VIEW).forward(request, response);

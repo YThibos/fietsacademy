@@ -3,6 +3,8 @@ package be.vdab.repositories;
 import java.math.BigDecimal;
 import java.util.List;
 
+import javax.persistence.NoResultException;
+
 import be.vdab.entities.Docent;
 import be.vdab.valueobjects.AantalDocentenPerWedde;
 import be.vdab.valueobjects.VoornaamEnId;
@@ -34,6 +36,7 @@ public class DocentRepository extends AbstractRepository {
 				.setParameter("tot", tot)
 				.setFirstResult(vanafRij)
 				.setMaxResults(aantalRijen)
+				.setHint("javax.persistence.loadgraph", getEntityManager().createEntityGraph(Docent.MET_CAMPUS))
 				.getResultList();
 	}
 	
@@ -60,5 +63,16 @@ public class DocentRepository extends AbstractRepository {
 		getEntityManager().createNamedQuery("Docent.algemeneOpslag")
 			.setParameter("factor", factor)
 			.executeUpdate();
+	}
+	
+	public Docent findByRijksregisternr(long rijksregisternr) {
+		try {
+			return getEntityManager().createNamedQuery("Docent.findByRijksregisternr", Docent.class)
+					.setParameter("rijksregisternr", rijksregisternr)
+					.getSingleResult();
+		}
+		catch (NoResultException ex) {
+			return null;
+		}
 	}
 }

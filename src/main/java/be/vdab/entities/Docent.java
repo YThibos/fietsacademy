@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.CollectionTable;
@@ -18,7 +19,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.Table;
 
 import be.vdab.enums.Geslacht;
@@ -29,10 +33,15 @@ import be.vdab.enums.Geslacht;
 
 @Entity
 @Table(name = "docenten")
+@NamedEntityGraph(
+		name = Docent.MET_CAMPUS, 
+		attributeNodes = @NamedAttributeNode("campus")
+		)
 public class Docent implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	public static final String MET_CAMPUS = "Docent.metCampus";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,15 +52,37 @@ public class Docent implements Serializable {
 	private Geslacht geslacht;
 	private BigDecimal wedde;
 	private long rijksregisternr;
-	
+
 	@ElementCollection
 	@CollectionTable(name = "docentenbijnamen", joinColumns = @JoinColumn(name = "docentid"))
-	@Column(name="Bijnaam")
+	@Column(name = "Bijnaam")
 	private Set<String> bijnamen;
-	
+
+	// DECOMMENT TO MAKE MANY(DOCENT)-TO-ONE(CAMPUS)
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "campusid")
 	private Campus campus;
+
+	@ManyToMany(mappedBy = "docenten")
+	private Set<Verantwoordelijkheid> verantwoordelijkheden = new LinkedHashSet<>();
+
+	public void addVerantwoordelijkheid(Verantwoordelijkheid verantwoordelijkheid) {
+		verantwoordelijkheden.add(verantwoordelijkheid);
+		if (!verantwoordelijkheid.getDocenten().contains(this)) {
+			verantwoordelijkheid.addDocent(this);
+		}
+	}
+
+	public void removeVerantwoordelijkheid(Verantwoordelijkheid verantwoordelijkheid) {
+		verantwoordelijkheden.remove(verantwoordelijkheid);
+		if (verantwoordelijkheid.getDocenten().contains(this)) {
+			verantwoordelijkheid.removeDocent(this);
+		}
+	}
+
+	public Set<Verantwoordelijkheid> getVerantwoordelijkheden() {
+		return Collections.unmodifiableSet(verantwoordelijkheden);
+	}
 
 	// CONSTRUCTORS
 	protected Docent() {
@@ -64,9 +95,9 @@ public class Docent implements Serializable {
 		setWedde(wedde);
 		setRijksregisternr(rijksregisternr);
 		bijnamen = new HashSet<>();
+		verantwoordelijkheden = new LinkedHashSet<>();
 	}
 
-	
 	// GETTERS & SETTERS
 	public long getId() {
 		return id;
@@ -131,20 +162,27 @@ public class Docent implements Serializable {
 	public void setGeslacht(Geslacht geslacht) {
 		this.geslacht = geslacht;
 	}
-	
+
 	public Set<String> getBijnamen() {
 		return Collections.unmodifiableSet(bijnamen);
 	}
-	
+
 	public Campus getCampus() {
 		return campus;
 	}
-	
+
 	public void setCampus(Campus campus) {
+		// IF THERE IS A REFERENCE IN CURRENT CAMPUS TO THIS DOCENT, REMOVE IT
+		if (this.campus != null && this.campus.getDocenten().contains(this)) {
+			this.campus.removeDocent(this);
+		}
 		this.campus = campus;
+		// IF NEW CAMPUS DOES NOT REFERENCE THIS DOCENT YET, FIX IT
+		if (campus != null && !campus.getDocenten().contains(this)) {
+			campus.addDocent(this);
+		}
 	}
 
-	
 	// VALIDATION METHODS
 	public static boolean isStringValid(String string) {
 		return string != null && !string.isEmpty();
@@ -167,41 +205,27 @@ public class Docent implements Serializable {
 		wedde = wedde.multiply(factor).setScale(2, RoundingMode.HALF_UP);
 	}
 
-	
 	// OBJECT METHOD OVERRIDES
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (id ^ (id >>> 32));
-		result = prime * result + (int) (rijksregisternr ^ (rijksregisternr >>> 32));
-		return result;
+		return Long.valueOf(rijksregisternr).hashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
+		if (!(obj instanceof Docent)) {
 			return false;
-		if (!(obj instanceof Docent))
-			return false;
-		Docent other = (Docent) obj;
-		if (id != other.id)
-			return false;
-		if (rijksregisternr != other.rijksregisternr)
-			return false;
-		return true;
+		}
+		return this.rijksregisternr == ((Docent) obj).rijksregisternr;
 	}
-	
-	
+
 	// DOCENT METHODS
 	public void addBijnaam(String bijnaam) {
 		bijnamen.add(bijnaam);
 	}
-	
+
 	public void removeBijnaam(String bijnaam) {
 		bijnamen.remove(bijnaam);
 	}
-	
+
 }
