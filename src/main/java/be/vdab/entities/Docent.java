@@ -13,10 +13,12 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import be.vdab.enums.Geslacht;
@@ -46,6 +48,10 @@ public class Docent implements Serializable {
 	@CollectionTable(name = "docentenbijnamen", joinColumns = @JoinColumn(name = "docentid"))
 	@Column(name="Bijnaam")
 	private Set<String> bijnamen;
+	
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name = "campusid")
+	private Campus campus;
 
 	// CONSTRUCTORS
 	protected Docent() {
@@ -128,6 +134,14 @@ public class Docent implements Serializable {
 	
 	public Set<String> getBijnamen() {
 		return Collections.unmodifiableSet(bijnamen);
+	}
+	
+	public Campus getCampus() {
+		return campus;
+	}
+	
+	public void setCampus(Campus campus) {
+		this.campus = campus;
 	}
 
 	

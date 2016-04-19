@@ -48,6 +48,10 @@ public class Campus implements Serializable {
 	}
 
 	// GETTERS & SETTERS
+	public long getId() {
+		return id;
+	}
+	
 	public String getNaam() {
 		return naam;
 	}
