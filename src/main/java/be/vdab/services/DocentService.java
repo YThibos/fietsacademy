@@ -4,8 +4,12 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.persistence.OptimisticLockException;
+import javax.persistence.RollbackException;
+
 import be.vdab.entities.Docent;
 import be.vdab.exceptions.DocentAlreadyExistsException;
+import be.vdab.exceptions.RecordAangepastException;
 import be.vdab.repositories.CampusRepository;
 import be.vdab.repositories.DocentRepository;
 import be.vdab.valueobjects.AantalDocentenPerWedde;
@@ -43,7 +47,14 @@ public class DocentService extends AbstractService {
 	public void opslag(long id, BigDecimal percentage) {
 		beginTransaction();
 		docentRepository.read(id).opslag(percentage);
-		commit();
+		try {
+			commit();
+		}
+		catch (RollbackException ex) {
+			if (ex.getCause() instanceof OptimisticLockException) {
+				throw new RecordAangepastException();
+			}
+		}
 	}
 	
 	public List<Docent> findByWeddeBetween(BigDecimal van, BigDecimal tot, int vanafRij, int aantalRijen) {

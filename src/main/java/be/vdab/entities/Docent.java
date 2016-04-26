@@ -3,6 +3,7 @@ package be.vdab.entities;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -24,6 +25,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import be.vdab.enums.Geslacht;
 
@@ -52,19 +54,17 @@ public class Docent implements Serializable {
 	private Geslacht geslacht;
 	private BigDecimal wedde;
 	private long rijksregisternr;
-
 	@ElementCollection
 	@CollectionTable(name = "docentenbijnamen", joinColumns = @JoinColumn(name = "docentid"))
 	@Column(name = "Bijnaam")
 	private Set<String> bijnamen;
-
-	// DECOMMENT TO MAKE MANY(DOCENT)-TO-ONE(CAMPUS)
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "campusid")
 	private Campus campus;
-
 	@ManyToMany(mappedBy = "docenten")
 	private Set<Verantwoordelijkheid> verantwoordelijkheden = new LinkedHashSet<>();
+	@Version
+	private Timestamp versie;
 
 	public void addVerantwoordelijkheid(Verantwoordelijkheid verantwoordelijkheid) {
 		verantwoordelijkheden.add(verantwoordelijkheid);
