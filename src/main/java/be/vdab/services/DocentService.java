@@ -6,6 +6,7 @@ import java.util.List;
 
 import be.vdab.entities.Docent;
 import be.vdab.exceptions.DocentAlreadyExistsException;
+import be.vdab.repositories.CampusRepository;
 import be.vdab.repositories.DocentRepository;
 import be.vdab.valueobjects.AantalDocentenPerWedde;
 import be.vdab.valueobjects.VoornaamEnId;
@@ -13,6 +14,7 @@ import be.vdab.valueobjects.VoornaamEnId;
 public class DocentService extends AbstractService {
 
 	private final DocentRepository docentRepository = new DocentRepository();
+	private final CampusRepository campusRepository = new CampusRepository();
 	
 	public Docent read(long id)  {
 		return docentRepository.read(id);		
@@ -80,6 +82,10 @@ public class DocentService extends AbstractService {
 		Docent docent = docentRepository.read(id);
 		Arrays.asList(bijnamen).stream().forEach(docent::removeBijnaam);
 		commit();
+	}
+	
+	public List<Docent> findBestBetaaldeVanEenCampus(long campusID) {
+		return docentRepository.findBestBetaaldeVanEenCampus(campusRepository.read(campusID));
 	}
 	
 }

@@ -43,5 +43,12 @@ http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd"
 			SELECT d FROM Docent d WHERE d.rijksregisternr = :rijksregisternr
 		</query>
 	</named-query>
+	
+	<named-query name="Docent.findBestBetaaldeVanEenCampus">
+		<query>
+			SELECT d FROM Docent d WHERE d.campus = :campus AND d.wedde =
+				(SELECT MAX(dd.wedde) FROM Docent dd WHERE dd.campus = :campus)
+		</query>
+	</named-query>
 
 </entity-mappings>
